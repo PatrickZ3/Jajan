@@ -1,22 +1,23 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from "react-native"
+import Header from "../components/jajan/header"
+import Calendar from "../components/jajan/calendar"
+import Expenses from "../components/jajan/expenses"
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Jajan</Text>
-      {/* You'll build your input and calendar here */}
+      <Header />
+      <Calendar />
+      <Expenses />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    backgroundColor: "#fff",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-});
+})
