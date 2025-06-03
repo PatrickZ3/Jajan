@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   },
   title:{
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "TTNorms-Bold",
     color: "#000000",
     textAlign: "center",
     marginTop: 20,
@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#9A9A9A",
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 16,
+    fontFamily: "TTNorms-Normal",
   }
 })
