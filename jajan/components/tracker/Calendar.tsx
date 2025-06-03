@@ -3,6 +3,9 @@ import { useState } from "react"
 
 export default function Calendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date())
+  const [selectedDate, setSelectedDate] = useState(new Date())
+
+  const formatDate = (date: Date) => date.toISOString().split("T")[0]
 
   const monthYear = currentMonth.toLocaleDateString("en-US", {
     month: "long",
@@ -78,13 +81,35 @@ export default function Calendar() {
 
       {/* Calendar Days Grid */}
       <View style={styles.dayGrid}>
-        {getDaysInMonth(currentMonth).map((day, index) => (
-          <View key={index} style={styles.dayBox}>
-            <Text style={[styles.dayText, !day.isCurrentMonth && styles.inactiveDay]}>
-              {day.date.getDate()}
-            </Text>
-          </View>
-        ))}
+        {getDaysInMonth(currentMonth).map((day, index) => {
+          const isSelected = formatDate(day.date) === formatDate(selectedDate)
+
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => setSelectedDate(day.date)}
+              style={[
+                styles.dayBox,
+                isSelected && styles.selectedDayBox,
+              ]}
+            >
+              <View style={styles.dayInner}>
+                <Text
+                  style={[
+                    styles.dayText,
+                    !day.isCurrentMonth && styles.inactiveDay,
+                    isSelected && styles.selectedDayText,
+                  ]}
+                >
+                  {day.date.getDate()}
+                </Text>
+
+                {/* Placeholder for expense total (optional) */}
+                <Text style={styles.expenseText}>$0</Text>
+              </View>
+            </TouchableOpacity>
+          )
+        })}
       </View>
       <View style={styles.line} />
       <Text style={styles.totalExpenses}>$0</Text>
@@ -128,7 +153,8 @@ const styles = StyleSheet.create({
   weekRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 16,
+    marginTop: 8,
+    marginBottom: 8,
     width: "100%"
   },
   weekText: {
@@ -144,7 +170,7 @@ const styles = StyleSheet.create({
   },
   dayBox: {
     width: `${100 / 7}%`,
-    height: 40,
+    height: 50,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -168,5 +194,27 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontFamily: "TTNorms-Bold",
   },
+  selectedDayBox: {
+    backgroundColor: "#8FE381",
+    borderRadius: 6,
+  },
+
+  selectedDayText: {
+    color: "#fff",
+    fontFamily: "TTNorms-Bold",
+  },
+  dayInner: {
+  flexDirection: "column",
+  justifyContent: "space-between",
+  alignItems: "center",
+  height: "100%",
+  paddingVertical: 4,
+},
+
+expenseText: {
+  fontSize: 12,
+  color: "#4CAF50", // green-ish
+  fontFamily: "TTNorms-Medium",
+},
 
 });
