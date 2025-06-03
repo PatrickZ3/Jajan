@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native"
-import Header from "../components/jajan/header"
-import Calendar from "../components/jajan/calendar"
-import Expenses from "../components/jajan/expenses"
+import Header from "../components/tracker/Header"
+import Calendar from "../components/tracker/Calendar"
+import Expenses from "../components/tracker/Expenses"
 
 export default function HomeScreen() {
   return (
@@ -16,7 +16,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 60,
+    paddingTop: 50,
+    paddingBottom: 20,
     paddingHorizontal: 20,
     backgroundColor: "#fff",
   },
