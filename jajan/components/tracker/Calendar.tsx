@@ -1,15 +1,19 @@
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from "react-native"
 import { useState } from "react"
 
-export default function Calendar() {
-  const [currentMonth, setCurrentMonth] = useState(new Date())
-  const [selectedDate, setSelectedDate] = useState(new Date())
+type Expense = {
+  date: string
+  amount: number
+}
 
-  const [expenses, setExpenses] = useState([
-    { date: "2025-06-01", amount: 50 },
-    { date: "2025-06-03", amount: 100 },
-    { date: "2025-06-04", amount: 20 },
-  ])
+type Props = {
+  selectedDate: Date
+  setSelectedDate: (date: Date) => void
+  expenses: Expense[]
+}
+
+export default function Calendar({ selectedDate, setSelectedDate, expenses }: Props) {
+  const [currentMonth, setCurrentMonth] = useState(new Date())
 
   const formatDate = (date: Date) => date.toISOString().split("T")[0]
 
@@ -41,19 +45,16 @@ export default function Calendar() {
       const dayIndex = i - startDay + 1
 
       if (i < startDay) {
-        // previous month
         days.push({
           date: new Date(year, month - 1, prevMonthLastDay - startDay + i + 1),
           isCurrentMonth: false,
         })
       } else if (dayIndex > daysInMonth) {
-        // next month
         days.push({
           date: new Date(year, month + 1, dayIndex - daysInMonth),
           isCurrentMonth: false,
         })
       } else {
-        // current month
         days.push({
           date: new Date(year, month, dayIndex),
           isCurrentMonth: true,
@@ -89,7 +90,8 @@ export default function Calendar() {
       <View style={styles.dayGrid}>
         {getDaysInMonth(currentMonth).map((day, index) => {
           const isSelected = formatDate(day.date) === formatDate(selectedDate)
-
+          const dayExpenses = expenses.filter(e => formatDate(day.date) === e.date)
+          const totalForDay = dayExpenses.reduce((sum, e) => sum + e.amount, 0)
           return (
             <TouchableOpacity
               key={index}
@@ -116,9 +118,7 @@ export default function Calendar() {
                   !day.isCurrentMonth && styles.inactiveExpenseText,
                 ]}
                 >
-                  {expenses.find(e => formatDate(day.date) === e.date)?.amount
-                    ? `$${expenses.find(e => formatDate(day.date) === e.date)?.amount}`
-                    : ''}
+                  {totalForDay ? `$${totalForDay}` : ''}
                 </Text>
               </View>
             </TouchableOpacity>
