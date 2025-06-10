@@ -98,6 +98,7 @@ export default function Calendar({ selectedDate, setSelectedDate, expenses }: Pr
               onPress={() => setSelectedDate(day.date)}
               style={[
                 styles.dayBox,
+                totalForDay > 0 && styles.hasExpenseDayBox,
                 isSelected && styles.selectedDayBox,
               ]}
             >
@@ -144,10 +145,12 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     marginBottom: 20,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
     //Shadow for iOS
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
     shadowRadius: 6,
     paddingHorizontal: 16,
     // Shadow for Android
@@ -244,5 +247,9 @@ const styles = StyleSheet.create({
   },
   inactiveExpenseText: {
     color: "#bbb",
+  },
+  hasExpenseDayBox: {
+    backgroundColor: "#d1fac3", // lighter green
+    borderRadius: 6,
   },
 });
