@@ -17,10 +17,25 @@ export default function HomeScreen() {
 
 
   const [selectedDate, setSelectedDate] = useState(new Date())
+
+
+  const categories = [
+    { emoji: "🍽️", name: "Food" },
+    { emoji: "🚗", name: "Transport" },
+    { emoji: "🛒", name: "Grocery" },
+    { emoji: "🛍️", name: "Shopping" },
+    { emoji: "🏠", name: "Housing" },
+    { emoji: "💊", name: "Healthcare" },
+    { emoji: "🎬", name: "Entertainment" },
+    { emoji: "📚", name: "Education" },
+    { emoji: "💼", name: "Work" },
+    { emoji: "💰", name: "Other" },
+  ]
+
   const [expenses, setExpenses] = useState([
-    { date: "2025-06-01", amount: 50, name: "Coffee" },
-    { date: "2025-06-03", amount: 100, name: "Groceries" },
-    { date: "2025-06-03", amount: 20, name: "Taxi" },
+    { date: "2025-06-01", amount: 50, name: "Coffee", category: "Food" },
+    { date: "2025-06-03", amount: 100, name: "Groceries", category: "Grocery" },
+    { date: "2025-06-03", amount: 20, name: "Taxi", category: "Transport" },
   ])
 
   if (!fontsLoaded) {
@@ -35,7 +50,7 @@ export default function HomeScreen() {
         setSelectedDate={setSelectedDate}
         expenses={expenses}
       />
-      <Expenses selectedDate={selectedDate} expenses={expenses} />
+      <Expenses selectedDate={selectedDate} expenses={expenses} categories={categories}/>
     </View>
   )
 }

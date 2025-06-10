@@ -4,17 +4,27 @@ type Expense = {
   date: string
   name: string
   amount: number
+  category?: string
+}
+type Category = {
+  emoji: string
+  name: string
 }
 
 type Props = {
   selectedDate: Date
   expenses: Expense[]
+  categories: Category[]
 }
 
 
-export default function Expenses({ selectedDate, expenses }: Props) {
+export default function Expenses({ selectedDate, expenses, categories }: Props) {
   const formatDate = (date: Date) => date.toISOString().split("T")[0]
   const filtered = expenses.filter(e => formatDate(new Date(e.date)) === formatDate(selectedDate))
+
+  const getEmoji = (category?: string) => {
+    return categories.find(c => c.name === category)?.emoji || "❓"
+  }
 
   return (
     <View style={styles.container}>
@@ -25,7 +35,7 @@ export default function Expenses({ selectedDate, expenses }: Props) {
           <View key={idx} style={styles.card}>
             <View style={styles.item}>
               <View style={styles.leftContent}>
-                <Text style={styles.emoji}>😭</Text>
+                <Text style={styles.emoji}>{getEmoji(expense.category)}</Text>
                 <Text style={styles.name}>{expense.name}</Text>
               </View>
               <Text style={styles.amount}>${expense.amount}</Text>
