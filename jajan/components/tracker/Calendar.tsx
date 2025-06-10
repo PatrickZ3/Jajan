@@ -5,6 +5,12 @@ export default function Calendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState(new Date())
 
+  const [expenses, setExpenses] = useState([
+    { date: "2025-06-01", amount: 50 },
+    { date: "2025-06-03", amount: 100 },
+    { date: "2025-06-04", amount: 20 },
+  ])
+
   const formatDate = (date: Date) => date.toISOString().split("T")[0]
 
   const monthYear = currentMonth.toLocaleDateString("en-US", {
@@ -105,14 +111,26 @@ export default function Calendar() {
                 </Text>
 
                 {/* Placeholder for expense total (optional) */}
-                <Text style={styles.expenseText}>$0</Text>
+                <Text style={[
+                  styles.expenseText,
+                  !day.isCurrentMonth && styles.inactiveExpenseText,
+                ]}
+                >
+                  {expenses.find(e => formatDate(day.date) === e.date)?.amount
+                    ? `$${expenses.find(e => formatDate(day.date) === e.date)?.amount}`
+                    : ''}
+                </Text>
               </View>
             </TouchableOpacity>
           )
         })}
       </View>
       <View style={styles.line} />
-      <Text style={styles.totalExpenses}>$0</Text>
+      <Text style={styles.totalExpenses}>
+        ${expenses
+          .filter(e => formatDate(new Date(e.date)) === formatDate(selectedDate))
+          .reduce((sum, e) => sum + e.amount, 0)}
+      </Text>
     </View>
 
   )
@@ -141,10 +159,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+
   arrow: {
     fontSize: 10,
     paddingHorizontal: 8,
   },
+
   monthText: {
     fontSize: 18,
     fontFamily: "TTNorms-Bold",
@@ -157,34 +177,40 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     width: "100%"
   },
+
   weekText: {
     flex: 1,
     textAlign: "center",
     color: "#666",
     fontFamily: "TTNorms-Bold",
   },
+
   dayGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     width: "100%"
   },
+
   dayBox: {
     width: `${100 / 7}%`,
     height: 50,
     justifyContent: "center",
     alignItems: "center",
   },
+
   dayText: {
     fontSize: 16,
     color: "#333",
     fontFamily: "TTNorms-Light"
   },
+
   inactiveDay: {
     color: "#bbb",
   },
+
   line: {
     height: 1,
-    backgroundColor: "#ccc", // or "#000" for black
+    backgroundColor: "#ccc",
     width: "100%",
     marginVertical: 8,
   },
@@ -204,17 +230,19 @@ const styles = StyleSheet.create({
     fontFamily: "TTNorms-Bold",
   },
   dayInner: {
-  flexDirection: "column",
-  justifyContent: "space-between",
-  alignItems: "center",
-  height: "100%",
-  paddingVertical: 4,
-},
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "100%",
+    paddingVertical: 4,
+  },
 
-expenseText: {
-  fontSize: 12,
-  color: "#4CAF50", // green-ish
-  fontFamily: "TTNorms-Medium",
-},
-
+  expenseText: {
+    fontSize: 12,
+    color: "#4CAF50",
+    fontFamily: "TTNorms-Medium",
+  },
+  inactiveExpenseText: {
+    color: "#bbb",
+  },
 });
