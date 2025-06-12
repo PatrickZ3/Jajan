@@ -26,8 +26,23 @@ export default function Expenses({ selectedDate, expenses, categories }: Props) 
     return categories.find(c => c.name === category)?.emoji || "❓"
   }
 
+  const isToday = formatDate(selectedDate) === formatDate(new Date())
+
+  const displayTitle = isToday
+    ? "Today's Expenses"
+    : `Spent on ${selectedDate.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+    })}`
+
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{displayTitle}</Text>
+        <View style={styles.addButton}>
+          <Text style={styles.addButtonText}>＋ Add</Text>
+        </View>
+      </View>
       {filtered.length === 0 ? (
         <Text style={styles.emptyText}>No expenses</Text>
       ) : (
@@ -54,19 +69,19 @@ const styles = StyleSheet.create({
 
   card: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 16,
+    borderRadius: 8,
     paddingVertical: 16,
     paddingHorizontal: 16,
     marginBottom: 16,
     borderWidth: 1,
     borderColor: "#E0E0E0",
-    // Shadow for iOS
+    //Shadow for iOS
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.1,
-    shadowRadius: 6,
+    shadowRadius: 2,
     // Shadow for Android
-    elevation: 3,
+    elevation: 6,
   },
   item: {
     flexDirection: "row",
@@ -100,5 +115,31 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
   },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+    paddingHorizontal: 4,
+  },
+
+  title: {
+    fontSize: 18,
+    fontFamily: "TTNorms-Bold",
+  },
+
+  addButton: {
+    backgroundColor: "#8FE381",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+
+  addButtonText: {
+    color: "#FFFFFF",
+    fontFamily: "TTNorms-Bold",
+    fontSize: 14,
+  },
+
 })
 

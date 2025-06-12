@@ -92,13 +92,15 @@ export default function Calendar({ selectedDate, setSelectedDate, expenses }: Pr
           const isSelected = formatDate(day.date) === formatDate(selectedDate)
           const dayExpenses = expenses.filter(e => formatDate(day.date) === e.date)
           const totalForDay = dayExpenses.reduce((sum, e) => sum + e.amount, 0)
+          const isToday = formatDate(day.date) === formatDate(new Date())
           return (
             <TouchableOpacity
               key={index}
               onPress={() => setSelectedDate(day.date)}
               style={[
                 styles.dayBox,
-                totalForDay > 0 && styles.hasExpenseDayBox,
+                totalForDay > 0 && !isSelected && styles.hasExpenseDayBox,
+                isToday && !isSelected && styles.todayBox,
                 isSelected && styles.selectedDayBox,
               ]}
             >
@@ -144,9 +146,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 20,
     marginBottom: 20,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
+    borderRadius: 8,
     //Shadow for iOS
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
@@ -249,7 +249,12 @@ const styles = StyleSheet.create({
     color: "#bbb",
   },
   hasExpenseDayBox: {
-    backgroundColor: "#d1fac3", // lighter green
+    backgroundColor: "#d1fac3",
     borderRadius: 6,
   },
+  todayBox: {
+    backgroundColor: "#c2e7c6",
+    borderRadius: 6,
+  },
+
 });
