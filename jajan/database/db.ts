@@ -1,5 +1,12 @@
+import { drizzle } from 'drizzle-orm/expo-sqlite'
+import { openDatabaseSync } from 'expo-sqlite'
 import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core'
 
+// Initialize DB
+const sqlite = openDatabaseSync('jajan.db')
+export const db = drizzle(sqlite)
+
+// Tables
 export const categories = sqliteTable('categories', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
@@ -16,5 +23,6 @@ export const expenses = sqliteTable('expenses', {
     .references(() => categories.id),
 })
 
+// Types
 export type Category = typeof categories.$inferSelect
 export type Expense = typeof expenses.$inferSelect
