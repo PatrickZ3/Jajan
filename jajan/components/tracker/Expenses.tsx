@@ -1,4 +1,6 @@
-import { Text, View, StyleSheet } from "react-native"
+import React, { useState } from "react";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import AddModal from "../ui/add-modal"
 
 type Expense = {
   date: string
@@ -19,6 +21,8 @@ type Props = {
 
 
 export default function Expenses({ selectedDate, expenses, categories }: Props) {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const formatDate = (date: Date) => date.toISOString().split("T")[0]
   const filtered = expenses.filter(e => formatDate(new Date(e.date)) === formatDate(selectedDate))
 
@@ -39,9 +43,9 @@ export default function Expenses({ selectedDate, expenses, categories }: Props) 
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{displayTitle}</Text>
-        <View style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={() => setIsModalVisible(true)}>
           <Text style={styles.addButtonText}>＋ Add</Text>
-        </View>
+        </TouchableOpacity>
       </View>
       {filtered.length === 0 ? (
         <Text style={styles.emptyText}>No expenses</Text>
@@ -58,6 +62,11 @@ export default function Expenses({ selectedDate, expenses, categories }: Props) 
           </View>
         ))
       )}
+
+        <AddModal visible={isModalVisible} onClose={() => setIsModalVisible(false)}>
+        <Text style={{ fontSize: 18, marginBottom: 12 }}>Add New Expense</Text>
+        {/* Add your form fields here */}
+      </AddModal>
     </View>
   )
 }
