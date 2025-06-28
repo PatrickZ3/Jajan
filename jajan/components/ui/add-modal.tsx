@@ -11,46 +11,56 @@ import {
 type Props = {
     visible: boolean;
     onClose: () => void;
-    onSave: (expense: { name: string; amount: number; date: Date }) => void;
+    onSave: (expense: { name: string; amount: number; date: Date; category: string }) => void;
+    categories: { emoji: string; name: string }[]
 };
 
-export default function AddModal({ visible, onClose, onSave }: Props) {
+export default function AddModal({ visible, onClose, onSave, categories }: Props) {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+    const [selectedCategory, setSelectedCategory] = useState(categories[0]?.name ?? "")
     const [expenseName, setExpenseName] = useState("");
     const [amount, setAmount] = useState("");
 
     const handleSave = () => {
         if (!expenseName || !amount) return;
-        onSave({ name: expenseName, amount: parseFloat(amount), date: selectedDate });
+        onSave({
+            name: expenseName,
+            amount: parseFloat(amount),
+            date: selectedDate,
+            category: selectedCategory,
+        });
         setExpenseName("");
         setAmount("");
         onClose();
     };
 
-    const days = Array.from({ length: 31 }, (_, i) => i + 1);
-
     return (
         <Modal
             visible={visible}
             transparent
-            animationType="slide"
+            animationType="fade"
             onRequestClose={onClose}
         >
             <View style={styles.overlay}>
                 <View style={styles.modalContent}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Expense Name"
-                        value={expenseName}
-                        onChangeText={setExpenseName}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Amount"
-                        value={amount}
-                        onChangeText={setAmount}
-                        keyboardType="numeric"
-                    />
+                    <View style={styles.inputRow}>
+                        <Text style={styles.emoji}>{categories.find(c => c.name === selectedCategory)?.emoji ?? "❓"}</Text>
+                        <View style={styles.inputColumn}>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Expense Name"
+                                value={expenseName}
+                                onChangeText={setExpenseName}
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Amount"
+                                value={amount}
+                                onChangeText={setAmount}
+                                keyboardType="numeric"
+                            />
+                        </View>
+                    </View>
 
                     <View style={styles.buttonRow}>
                         <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
@@ -93,6 +103,20 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginTop: 8,
         marginBottom: 4,
+    },
+    inputRow: {
+        flexDirection: "row",
+        alignItems: "stretch",
+    },
+    emoji: {
+        fontSize: 48,
+        padding: 6,
+        textAlignVertical: "center",
+        alignSelf: "center",
+    },
+    inputColumn: {
+        flex: 1,
+        justifyContent: "space-between",
     },
     input: {
         paddingHorizontal: 10,

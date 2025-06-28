@@ -39,6 +39,17 @@ export default function Expenses({ selectedDate, expenses, categories }: Props) 
       day: "numeric",
     })}`
 
+  const handleSaveExpense = (expense: { name: string; amount: number; date: Date }) => {
+    const newExpense: Expense = {
+      ...expense,
+      date: expense.date.toISOString(),  // Convert Date to string
+    };
+
+    console.log("Saved expense:", newExpense);
+    setIsModalVisible(false);
+  };
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -63,10 +74,12 @@ export default function Expenses({ selectedDate, expenses, categories }: Props) 
         ))
       )}
 
-        <AddModal visible={isModalVisible} onClose={() => setIsModalVisible(false)}>
-        <Text style={{ fontSize: 18, marginBottom: 12 }}>Add New Expense</Text>
-        {/* Add your form fields here */}
-      </AddModal>
+      <AddModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        onSave={handleSaveExpense}
+        categories={categories}
+      />
     </View>
   )
 }
