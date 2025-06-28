@@ -1,27 +1,68 @@
-// ui/add-modal.tsx
-import React from "react";
-import { Modal, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  Modal,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  Button,
+  FlatList
+} from "react-native";
 
 type Props = {
   visible: boolean;
   onClose: () => void;
-  children?: React.ReactNode;
+  onSave: (expense: { name: string; amount: number; date: Date }) => void;
 };
 
-export default function AddModal({ visible, onClose, children }: Props) {
+export default function AddModal({ visible, onClose, onSave }: Props) {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [expenseName, setExpenseName] = useState("");
+  const [amount, setAmount] = useState("");
+
+  const handleSave = () => {
+    if (!expenseName || !amount) return;
+    onSave({ name: expenseName, amount: parseFloat(amount), date: selectedDate });
+    setExpenseName("");
+    setAmount("");
+    onClose();
+  };
+
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
+
   return (
     <Modal
       visible={visible}
       transparent
-      animationType="fade"
+      animationType="slide"
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Text style={styles.closeText}>✕</Text>
-          </TouchableOpacity>
-          {children}
+          <TextInput
+            style={styles.input}
+            placeholder="Expense Name"
+            value={expenseName}
+            onChangeText={setExpenseName}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Amount"
+            value={amount}
+            onChangeText={setAmount}
+            keyboardType="numeric"
+          />
+
+          <View style={styles.buttonRow}>
+            <Button title="Cancel" onPress={onClose} color="#888" />
+            <Button
+              title="Save"
+              onPress={handleSave}
+              disabled={!expenseName || !amount}
+              color="#4CAF50"
+            />
+          </View>
         </View>
       </View>
     </Modal>
@@ -37,18 +78,28 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: "white",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    width: "85%",
+    alignItems: "stretch",
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 8,
-    padding: 20,
-    width: "80%",
-    alignItems: "center",
+    padding: 10,
+    marginTop: 12,
   },
-  closeButton: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-  },
-  closeText: {
-    fontSize: 18,
-    color: "#888",
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 8,
   },
 });
