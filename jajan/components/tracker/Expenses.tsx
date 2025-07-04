@@ -17,10 +17,11 @@ type Props = {
   selectedDate: Date
   expenses: Expense[]
   categories: Category[]
+  onAddExpense: (expense: { name: string; amount: number; date: Date; category: string }) => void
 }
 
 
-export default function Expenses({ selectedDate, expenses, categories }: Props) {
+export default function Expenses({ selectedDate, expenses, categories, onAddExpense }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const formatDate = (date: Date) => date.toISOString().split("T")[0]
@@ -38,17 +39,6 @@ export default function Expenses({ selectedDate, expenses, categories }: Props) 
       month: "long",
       day: "numeric",
     })}`
-
-  const handleSaveExpense = (expense: { name: string; amount: number; date: Date }) => {
-    const newExpense: Expense = {
-      ...expense,
-      date: expense.date.toISOString(),  // Convert Date to string
-    };
-
-    console.log("Saved expense:", newExpense);
-    setIsModalVisible(false);
-  };
-
 
   return (
     <View style={styles.container}>
@@ -77,7 +67,10 @@ export default function Expenses({ selectedDate, expenses, categories }: Props) 
       <AddModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        onSave={handleSaveExpense}
+        onSave={(expense) => {
+          onAddExpense(expense);
+          setIsModalVisible(false);
+        }}
         categories={categories}
       />
     </View>

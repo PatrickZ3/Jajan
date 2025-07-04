@@ -7,12 +7,18 @@ import {
     TouchableOpacity,
     TextInput,
 } from "react-native";
+import CategoryModal from "./add-category";
+
+type Category = {
+    emoji: string;
+    name: string;
+};
 
 type Props = {
     visible: boolean;
     onClose: () => void;
     onSave: (expense: { name: string; amount: number; date: Date; category: string }) => void;
-    categories: { emoji: string; name: string }[]
+    categories: Category[];
 };
 
 export default function AddModal({ visible, onClose, onSave, categories }: Props) {
@@ -20,6 +26,7 @@ export default function AddModal({ visible, onClose, onSave, categories }: Props
     const [selectedCategory, setSelectedCategory] = useState(categories[0]?.name ?? "")
     const [expenseName, setExpenseName] = useState("");
     const [amount, setAmount] = useState("");
+    const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
 
     const handleSave = () => {
         if (!expenseName || !amount) return;
@@ -34,52 +41,75 @@ export default function AddModal({ visible, onClose, onSave, categories }: Props
         onClose();
     };
 
+    const handleSelectCategory = (categoryName: string) => {
+        setSelectedCategory(categoryName);
+        setIsCategoryModalVisible(false);
+    };
+
     return (
-        <Modal
-            visible={visible}
-            transparent
-            animationType="fade"
-            onRequestClose={onClose}
-        >
-            <View style={styles.overlay}>
-                <View style={styles.modalContent}>
-                    <View style={styles.inputRow}>
-                        <Text style={styles.emoji}>{categories.find(c => c.name === selectedCategory)?.emoji ?? "❓"}</Text>
-                        <View style={styles.inputColumn}>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Expense Name"
-                                value={expenseName}
-                                onChangeText={setExpenseName}
-                            />
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Amount"
-                                value={amount}
-                                onChangeText={setAmount}
-                                keyboardType="numeric"
-                            />
+        <>
+        {isCategoryModalVisible ? (
+      <CategoryModal
+        visible={true}
+        categories={categories}
+        onSelect={(categoryName) => {
+          setSelectedCategory(categoryName);
+          setIsCategoryModalVisible(false);
+        }}
+        onClose={() => setIsCategoryModalVisible(false)}
+      />
+    ) : (
+            <Modal
+                visible={visible}
+                transparent
+                animationType="fade"
+                onRequestClose={onClose}
+            >
+                <View style={styles.overlay}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.inputRow}>
+                            <TouchableOpacity onPress={() => setIsCategoryModalVisible(true)}>
+                                <Text style={styles.emoji}>
+                                    {categories.find(c => c.name === selectedCategory)?.emoji ?? "❓"}
+                                </Text>
+                            </TouchableOpacity>
+                            <View style={styles.inputColumn}>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Expense Name"
+                                    value={expenseName}
+                                    onChangeText={setExpenseName}
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Amount"
+                                    value={amount}
+                                    onChangeText={setAmount}
+                                    keyboardType="numeric"
+                                />
+                            </View>
+                        </View>
+
+                        <View style={styles.buttonRow}>
+                            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+                                <Text style={{ color: "#fff", textAlign: "center", fontFamily: "TTNorms-Bold", }}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[
+                                    styles.saveButton,
+                                    (!expenseName || !amount) && { opacity: 0.5 }
+                                ]}
+                                onPress={handleSave}
+                                disabled={!expenseName || !amount}
+                            >
+                                <Text style={{ color: "#fff", textAlign: "center", fontFamily: "TTNorms-Bold", }}>＋ Add</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
-
-                    <View style={styles.buttonRow}>
-                        <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-                            <Text style={{ color: "#fff", textAlign: "center", fontFamily: "TTNorms-Bold", }}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[
-                                styles.saveButton,
-                                (!expenseName || !amount) && { opacity: 0.5 }
-                            ]}
-                            onPress={handleSave}
-                            disabled={!expenseName || !amount}
-                        >
-                            <Text style={{ color: "#fff", textAlign: "center", fontFamily: "TTNorms-Bold", }}>＋ Add</Text>
-                        </TouchableOpacity>
-                    </View>
                 </View>
-            </View>
-        </Modal>
+            </Modal>
+           )} 
+        </>
     );
 }
 

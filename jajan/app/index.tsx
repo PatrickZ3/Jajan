@@ -1,4 +1,4 @@
-import { View, StyleSheet, ActivityIndicator, Text } from "react-native"
+import { View, StyleSheet, ActivityIndicator, Text, Alert } from "react-native"
 import { useFonts } from "expo-font"
 import { useState, useEffect } from "react"
 import Header from "../components/tracker/Header"
@@ -35,11 +35,7 @@ export default function HomeScreen() {
     { emoji: "💰", name: "Other" },
   ]
 
-  const [expenses, setExpenses] = useState([
-    { date: "2025-06-01", amount: 50, name: "Coffee", category: "Food" },
-    { date: "2025-06-03", amount: 100, name: "Groceries", category: "Grocery" },
-    { date: "2025-06-03", amount: 20, name: "Taxi", category: "Transport" },
-  ])
+  const [expenses, setExpenses] = useState<{ date: string; name: string; amount: number; category: string }[]>([])
 
   const [dbCategories, setDbCategories] = useState<Category[]>([])
   const [dbExpenses, setDbExpenses] = useState<
@@ -48,6 +44,52 @@ export default function HomeScreen() {
 
   const [categoryColumns, setCategoryColumns] = useState<any[]>([])
   const [expenseColumns, setExpenseColumns] = useState<any[]>([])
+
+  const handleAddExpense = async (expense: {
+    name: string;
+    amount: number;
+    date: Date;
+    category: string;
+  }) => {
+    try {
+      // Step 1: Look up category_id by name
+      const categoryRow = await db
+        .select()
+        .from(categoryTable)
+        .where(sql`name = ${expense.category}`);
+
+      if (!categoryRow.length) {
+        console.error("❌ Category not found in DB:", expense.category);
+        return;
+      }
+
+      const categoryId = categoryRow[0].id;
+
+      // Step 2: Insert into expenses table
+      await db.insert(expenseTable).values({
+        name: expense.name,
+        price: expense.amount,
+        date: expense.date.toISOString().split("T")[0],  // Store as 'YYYY-MM-DD'
+        category_id: categoryId,
+      });
+
+      console.log("✅ Expense inserted to DB");
+
+      // Step 3: Update local state
+      setExpenses((prev) => [
+        ...prev,
+        {
+          name: expense.name,
+          amount: expense.amount,
+          date: expense.date.toISOString().split("T")[0],
+          category: expense.category,
+        },
+      ]);
+    } catch (error) {
+      console.error("❌ Error adding expense:", error);
+    }
+  };
+
 
   useEffect(() => {
     const setup = async () => {
@@ -74,15 +116,16 @@ export default function HomeScreen() {
         db.select().from(expenseTable),
       ])
 
-      setDbCategories(fetchedCategories)
-      setDbExpenses(
-        fetchedExpenses.map((e) => ({
-          date: e.date,
-          name: e.name,
-          amount: e.price,
-          category: fetchedCategories.find((c) => c.id === e.category_id)?.name || "Unknown",
-        }))
-      )
+       const mappedExpenses = fetchedExpenses.map((e) => ({
+        date: e.date,
+        name: e.name,
+        amount: e.price,
+        category: fetchedCategories.find((c) => c.id === e.category_id)?.name || "Unknown",
+      }))
+
+      setDbExpenses(mappedExpenses)
+      setExpenses(mappedExpenses)
+      
       const allExpenses = await db.select().from(expenseTable);
       console.log("🧾 Current Expenses in DB:", allExpenses);
     }
@@ -102,7 +145,12 @@ export default function HomeScreen() {
         setSelectedDate={setSelectedDate}
         expenses={expenses}
       />
-      <Expenses selectedDate={selectedDate} expenses={expenses} categories={categories} />
+      <Expenses
+        selectedDate={selectedDate}
+        expenses={expenses}
+        categories={categories}
+        onAddExpense={handleAddExpense}
+      />
     </View>
   )
 }
