@@ -72,6 +72,7 @@ export default function Expenses({ selectedDate, expenses, categories, onAddExpe
           setIsModalVisible(false);
         }}
         categories={categories}
+        selectedDate={selectedDate}
       />
     </View>
   )

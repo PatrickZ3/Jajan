@@ -90,6 +90,16 @@ export default function HomeScreen() {
     }
   };
 
+  useEffect(() => {
+    const reset = async () => {
+      console.log("🧨 Resetting DB...");
+      await resetDatabase();
+      console.log("✅ DB reset complete.");
+    };
+
+    // UNCOMMENT TO RUN ON LAUNCH:
+    // reset();
+  }, []);
 
   useEffect(() => {
     const setup = async () => {
@@ -116,7 +126,7 @@ export default function HomeScreen() {
         db.select().from(expenseTable),
       ])
 
-       const mappedExpenses = fetchedExpenses.map((e) => ({
+      const mappedExpenses = fetchedExpenses.map((e) => ({
         date: e.date,
         name: e.name,
         amount: e.price,
@@ -125,7 +135,7 @@ export default function HomeScreen() {
 
       setDbExpenses(mappedExpenses)
       setExpenses(mappedExpenses)
-      
+
       const allExpenses = await db.select().from(expenseTable);
       console.log("🧾 Current Expenses in DB:", allExpenses);
     }
