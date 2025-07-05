@@ -42,16 +42,19 @@ export default function CategoryModal({
                         style={{ flex: 1 }}
                         data={categories}
                         keyExtractor={(item) => item.name}
-                        numColumns={4}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity
-                                style={styles.item}
-                                onPress={() => onSelect(item.name)}
-                            >
-                                <Text style={styles.emoji}>{item.emoji}</Text>
-                                <Text style={styles.name}>{item.name}</Text>
-                            </TouchableOpacity>
-                        )}
+                        numColumns={3}
+                        columnWrapperStyle={{ justifyContent: 'space-around' }}
+                        renderItem={({ item }) => {
+                            console.log("Rendering item:", item);
+                            return (
+                                <TouchableOpacity style={styles.item} onPress={() => onSelect(item.name)}>
+                                    <View style={styles.emojiContainer}>
+                                        <Text style={styles.emoji}>{item.emoji}</Text>
+                                    </View>
+                                    <Text style={styles.name}>{item.name}</Text>
+                                </TouchableOpacity>
+                            )
+                        }}
                         contentContainerStyle={styles.list}
                     />
 
@@ -78,6 +81,7 @@ const styles = StyleSheet.create({
         width: "85%",
         maxHeight: "80%",
         alignItems: "stretch",
+        flexGrow: 1,
     },
     title: {
         fontSize: 18,
@@ -86,22 +90,30 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     list: {
-        alignItems: "center",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "flex-start",
     },
     item: {
-        flex: 1,
-        margin: 8,
+        flexBasis: "30%",
+        marginVertical: 10,
+        marginHorizontal: 4,
         alignItems: "center",
         justifyContent: "center",
     },
     emoji: {
-        fontSize: 32,
+        fontSize: 72,
+        textAlign: "center",
     },
+
     name: {
-        fontSize: 12,
+        fontSize: 14,
         marginTop: 4,
         fontFamily: "TTNorms-Medium",
         textAlign: "center",
+        flexWrap: "wrap",
+        flexShrink: 1,
+        maxWidth: 80,
     },
     closeButton: {
         marginTop: 16,
@@ -113,5 +125,9 @@ const styles = StyleSheet.create({
         color: "#fff",
         textAlign: "center",
         fontFamily: "TTNorms-Bold",
+    },
+    emojiContainer: {       // light gray background
+        alignItems: "center",
+        justifyContent: "center",
     },
 });

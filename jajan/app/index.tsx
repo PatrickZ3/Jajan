@@ -125,7 +125,7 @@ export default function HomeScreen() {
         db.select().from(categoryTable),
         db.select().from(expenseTable),
       ])
-
+      setDbCategories(fetchedCategories);
       const mappedExpenses = fetchedExpenses.map((e) => ({
         date: e.date,
         name: e.name,
@@ -158,7 +158,7 @@ export default function HomeScreen() {
       <Expenses
         selectedDate={selectedDate}
         expenses={expenses}
-        categories={categories}
+        categories={dbCategories}
         onAddExpense={handleAddExpense}
       />
     </View>

@@ -48,10 +48,10 @@ export default function AddModal({ visible, onClose, onSave, categories, selecte
     };
 
     useEffect(() => {
-        if (visible) {
-            setSelectedDate(selectedDateProp);
+        if (visible && categories.length > 0) {
+            setSelectedCategory(categories[0].name);
         }
-    }, [visible, selectedDateProp]);
+    }, [visible, categories]);
 
 
     return (
