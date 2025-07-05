@@ -85,12 +85,14 @@ export default function AddModal({ visible, onClose, onSave, categories, selecte
                                     <TextInput
                                         style={styles.input}
                                         placeholder="Expense Name"
+                                        placeholderTextColor="#808080"
                                         value={expenseName}
                                         onChangeText={setExpenseName}
                                     />
                                     <TextInput
                                         style={styles.input}
                                         placeholder="Amount"
+                                        placeholderTextColor="#808080"
                                         value={amount}
                                         onChangeText={setAmount}
                                         keyboardType="numeric"
