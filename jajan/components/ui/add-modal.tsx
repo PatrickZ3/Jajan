@@ -85,14 +85,14 @@ export default function AddModal({ visible, onClose, onSave, categories, selecte
                                     <TextInput
                                         style={styles.input}
                                         placeholder="Expense Name"
-                                        placeholderTextColor="#808080"
+                                        placeholderTextColor="#6B7280"
                                         value={expenseName}
                                         onChangeText={setExpenseName}
                                     />
                                     <TextInput
                                         style={styles.input}
                                         placeholder="Amount"
-                                        placeholderTextColor="#808080"
+                                        placeholderTextColor="#6B7280"
                                         value={amount}
                                         onChangeText={setAmount}
                                         keyboardType="numeric"
@@ -146,12 +146,11 @@ const styles = StyleSheet.create({
     },
     inputRow: {
         flexDirection: "row",
-        alignItems: "stretch",
+        alignItems: "center",
     },
     emoji: {
         fontSize: 48,
         padding: 6,
-        textAlignVertical: "center",
         alignSelf: "center",
     },
     inputColumn: {
@@ -163,6 +162,10 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         marginTop: 12,
         fontFamily: "TTNorms-Medium",
+        borderWidth: 1,
+        borderColor: "#D1D5DB",
+        borderRadius: 6,
+        
     },
     buttonRow: {
         flexDirection: "row",
