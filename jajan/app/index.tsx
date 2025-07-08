@@ -22,19 +22,6 @@ export default function HomeScreen() {
 
   const [selectedDate, setSelectedDate] = useState(new Date())
 
-  const categories = [
-    { emoji: "🍽️", name: "Food" },
-    { emoji: "🚗", name: "Transport" },
-    { emoji: "🛒", name: "Grocery" },
-    { emoji: "🛍️", name: "Shopping" },
-    { emoji: "🏠", name: "Housing" },
-    { emoji: "💊", name: "Healthcare" },
-    { emoji: "🎬", name: "Entertainment" },
-    { emoji: "📚", name: "Education" },
-    { emoji: "💼", name: "Work" },
-    { emoji: "💰", name: "Other" },
-  ]
-
   const [expenses, setExpenses] = useState<{ date: string; name: string; amount: number; category: string }[]>([])
 
   const [dbCategories, setDbCategories] = useState<Category[]>([])
@@ -44,6 +31,8 @@ export default function HomeScreen() {
 
   const [categoryColumns, setCategoryColumns] = useState<any[]>([])
   const [expenseColumns, setExpenseColumns] = useState<any[]>([])
+
+  
 
   const handleAddExpense = async (expense: {
     name: string;
@@ -89,6 +78,52 @@ export default function HomeScreen() {
       console.error("❌ Error adding expense:", error);
     }
   };
+
+  const handleEditExpense = async (updatedExpense: {
+  name: string;
+  amount: number;
+  date: string;
+  category: string;
+}) => {
+  try {
+    // 1️⃣ Look up the category_id
+    const categoryRow = await db
+      .select()
+      .from(categoryTable)
+      .where(sql`name = ${updatedExpense.category}`);
+
+    if (!categoryRow.length) {
+      console.error("❌ Category not found:", updatedExpense.category);
+      return;
+    }
+
+    const categoryId = categoryRow[0].id;
+
+    // 2️⃣ Update the expense in the database
+    await db
+      .update(expenseTable)
+      .set({
+        name: updatedExpense.name,
+        price: updatedExpense.amount,
+        category_id: categoryId,
+      })
+      .where(sql`date = ${updatedExpense.date} AND name = ${updatedExpense.name}`);
+
+    console.log("✅ Expense updated in DB");
+
+    // 3️⃣ Update local state
+    setExpenses((prev) =>
+      prev.map((e) =>
+        e.date === updatedExpense.date && e.name === updatedExpense.name
+          ? updatedExpense
+          : e
+      )
+    );
+  } catch (error) {
+    console.error("❌ Error editing expense:", error);
+  }
+};
+
 
   useEffect(() => {
     const reset = async () => {
@@ -160,6 +195,7 @@ export default function HomeScreen() {
         expenses={expenses}
         categories={dbCategories}
         onAddExpense={handleAddExpense}
+        onEditExpense={handleEditExpense}
       />
     </View>
   )

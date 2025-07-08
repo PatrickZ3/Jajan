@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontFamily: "TTNorms-Bold",
   },
+
   selectedDayBox: {
     backgroundColor: "#8FE381",
     borderRadius: 6,

@@ -45,7 +45,6 @@ export default function CategoryModal({
                         numColumns={3}
                         columnWrapperStyle={{ justifyContent: 'space-around' }}
                         renderItem={({ item }) => {
-                            console.log("Rendering item:", item);
                             return (
                                 <TouchableOpacity style={styles.item} onPress={() => onSelect(item.name)}>
                                     <View style={styles.emojiContainer}>

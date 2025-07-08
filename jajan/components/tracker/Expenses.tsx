@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import AddModal from "../ui/add-modal"
+import EditModal from "../ui/edit-modal";
 
 type Expense = {
   date: string
   name: string
   amount: number
-  category?: string
+  category: string
 }
 type Category = {
   emoji: string
@@ -18,11 +19,14 @@ type Props = {
   expenses: Expense[]
   categories: Category[]
   onAddExpense: (expense: { name: string; amount: number; date: Date; category: string }) => void
+  onEditExpense: (expense: Expense) => void;
 }
 
 
-export default function Expenses({ selectedDate, expenses, categories, onAddExpense }: Props) {
+export default function Expenses({ selectedDate, expenses, categories, onAddExpense, onEditExpense }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
   const formatDate = (date: Date) => date.toISOString().split("T")[0]
   const filtered = expenses.filter(e => formatDate(new Date(e.date)) === formatDate(selectedDate))
@@ -52,7 +56,14 @@ export default function Expenses({ selectedDate, expenses, categories, onAddExpe
         <Text style={styles.emptyText}>No expenses</Text>
       ) : (
         filtered.map((expense, idx) => (
-          <View key={idx} style={styles.card}>
+          <TouchableOpacity
+            key={idx}
+            style={styles.card}
+            onPress={() => {
+              setSelectedExpense(expense);
+              setIsEditModalVisible(true);
+            }}
+          >
             <View style={styles.item}>
               <View style={styles.leftContent}>
                 <Text style={styles.emoji}>{getEmoji(expense.category)}</Text>
@@ -60,7 +71,7 @@ export default function Expenses({ selectedDate, expenses, categories, onAddExpe
               </View>
               <Text style={styles.amount}>${expense.amount}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         ))
       )}
 
@@ -70,6 +81,17 @@ export default function Expenses({ selectedDate, expenses, categories, onAddExpe
         onSave={(expense) => {
           onAddExpense(expense);
           setIsModalVisible(false);
+        }}
+        categories={categories}
+        selectedDate={selectedDate}
+      />
+      <EditModal
+        visible={isEditModalVisible}
+        expense={selectedExpense}
+        onClose={() => setIsEditModalVisible(false)}
+        onSave={(updatedExpense) => {
+          onEditExpense(updatedExpense);
+          setIsEditModalVisible(false);
         }}
         categories={categories}
         selectedDate={selectedDate}
