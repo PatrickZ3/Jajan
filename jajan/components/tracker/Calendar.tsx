@@ -1,6 +1,6 @@
-import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from "react-native"
+import { Text, View, StyleSheet, Dimensions, TouchableOpacity, PanResponder, GestureResponderEvent, PanResponderGestureState } from "react-native"
 import { useState } from "react"
-import { Animated } from "react-native";
+
 
 type Expense = {
   date: string
@@ -66,9 +66,28 @@ export default function Calendar({ selectedDate, setSelectedDate, expenses }: Pr
     return days
   }
 
+  const panResponder = PanResponder.create({
+    onMoveShouldSetPanResponder: (evt, gestureState) => {
+      const dx = Math.abs(gestureState.dx);
+      const dy = Math.abs(gestureState.dy);
+
+      return dx > 20 && dx > dy * 2;
+    },
+
+    onPanResponderRelease: (evt, gestureState) => {
+      if (gestureState.dx < -20) {
+        // Swiped left
+        navigateMonth("next");
+      } else if (gestureState.dx > 20) {
+        // Swiped right
+        navigateMonth("prev");
+      }
+    },
+  });
+
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container}{...panResponder.panHandlers}>
       {/* Month Navigation */}
       <View style={styles.monthNav}>
         <TouchableOpacity onPress={() => navigateMonth("prev")}>
