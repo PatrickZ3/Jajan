@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from "react-native"
 import { useState } from "react"
+import { Animated } from "react-native";
 
 type Expense = {
   date: string

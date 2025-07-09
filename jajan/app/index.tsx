@@ -1,6 +1,6 @@
 import { View, StyleSheet, ActivityIndicator, Text, Alert } from "react-native"
 import { useFonts } from "expo-font"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Header from "../components/tracker/Header"
 import Calendar from "../components/tracker/Calendar"
 import Expenses from "../components/tracker/Expenses"
@@ -10,6 +10,8 @@ import type { Category } from "../database/db"
 import AsyncStorage from "expo-sqlite/kv-store"
 import { sql } from "drizzle-orm/sql"
 import { resetDatabase } from "../database/reset";
+import { Animated } from "react-native";
+
 
 export default function HomeScreen() {
   const [fontsLoaded] = useFonts({
@@ -32,7 +34,7 @@ export default function HomeScreen() {
   const [categoryColumns, setCategoryColumns] = useState<any[]>([])
   const [expenseColumns, setExpenseColumns] = useState<any[]>([])
 
-  
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   const handleAddExpense = async (expense: {
     name: string;
@@ -80,49 +82,49 @@ export default function HomeScreen() {
   };
 
   const handleEditExpense = async (updatedExpense: {
-  name: string;
-  amount: number;
-  date: string;
-  category: string;
-}) => {
-  try {
-    // 1️⃣ Look up the category_id
-    const categoryRow = await db
-      .select()
-      .from(categoryTable)
-      .where(sql`name = ${updatedExpense.category}`);
+    name: string;
+    amount: number;
+    date: string;
+    category: string;
+  }) => {
+    try {
+      // 1️⃣ Look up the category_id
+      const categoryRow = await db
+        .select()
+        .from(categoryTable)
+        .where(sql`name = ${updatedExpense.category}`);
 
-    if (!categoryRow.length) {
-      console.error("❌ Category not found:", updatedExpense.category);
-      return;
+      if (!categoryRow.length) {
+        console.error("❌ Category not found:", updatedExpense.category);
+        return;
+      }
+
+      const categoryId = categoryRow[0].id;
+
+      // 2️⃣ Update the expense in the database
+      await db
+        .update(expenseTable)
+        .set({
+          name: updatedExpense.name,
+          price: updatedExpense.amount,
+          category_id: categoryId,
+        })
+        .where(sql`date = ${updatedExpense.date} AND name = ${updatedExpense.name}`);
+
+      console.log("✅ Expense updated in DB");
+
+      // 3️⃣ Update local state
+      setExpenses((prev) =>
+        prev.map((e) =>
+          e.date === updatedExpense.date && e.name === updatedExpense.name
+            ? updatedExpense
+            : e
+        )
+      );
+    } catch (error) {
+      console.error("❌ Error editing expense:", error);
     }
-
-    const categoryId = categoryRow[0].id;
-
-    // 2️⃣ Update the expense in the database
-    await db
-      .update(expenseTable)
-      .set({
-        name: updatedExpense.name,
-        price: updatedExpense.amount,
-        category_id: categoryId,
-      })
-      .where(sql`date = ${updatedExpense.date} AND name = ${updatedExpense.name}`);
-
-    console.log("✅ Expense updated in DB");
-
-    // 3️⃣ Update local state
-    setExpenses((prev) =>
-      prev.map((e) =>
-        e.date === updatedExpense.date && e.name === updatedExpense.name
-          ? updatedExpense
-          : e
-      )
-    );
-  } catch (error) {
-    console.error("❌ Error editing expense:", error);
-  }
-};
+  };
 
 
   useEffect(() => {
@@ -185,18 +187,26 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Header />
-      <Calendar
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-        expenses={expenses}
-      />
-      <Expenses
-        selectedDate={selectedDate}
-        expenses={expenses}
-        categories={dbCategories}
-        onAddExpense={handleAddExpense}
-        onEditExpense={handleEditExpense}
-      />
+      <Animated.ScrollView
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+      >
+        <Calendar
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          expenses={expenses}
+        />
+        <Expenses
+          selectedDate={selectedDate}
+          expenses={expenses}
+          categories={dbCategories}
+          onAddExpense={handleAddExpense}
+          onEditExpense={handleEditExpense}
+        />
+      </Animated.ScrollView>
     </View>
   )
 }
