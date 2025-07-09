@@ -53,6 +53,10 @@ export default function AddModal({ visible, onClose, onSave, categories, selecte
         }
     }, [visible, categories]);
 
+    useEffect(() => {
+        setSelectedDate(selectedDateProp);
+    }, [selectedDateProp]);
+
 
     return (
         <>
@@ -165,7 +169,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#D1D5DB",
         borderRadius: 6,
-        
+
     },
     buttonRow: {
         flexDirection: "row",
