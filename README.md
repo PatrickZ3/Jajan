@@ -37,19 +37,19 @@ Requires [Expo CLI](https://docs.expo.dev/get-started/installation/) installed.
 ## 📸 Screenshots
 
 <h3>Main Page</h3>
-<img src="./screenshot/main.png" width="300" />
+<img src="./screenshots/main.png" width="300" />
 
 <h3>Add Expense Modal</h3>
-<img src="./screenshot/add-modal.png" width="300" />
+<img src="./screenshots/add-modal.png" width="300" />
 
 <h3>Add Category Modal</h3>
-<img src="./screenshot/add-category.png" width="300" />
+<img src="./screenshots/add-category.png" width="300" />
 
 <h3>Edit Expense Modal</h3>
-<img src="./screenshot/edit-modal.png" width="300" />
+<img src="./screenshots/edit-modal.png" width="300" />
 
 <h3>Example of long, scrollable expense list</h3>
-<img src="./screenshot/scroll.png" width="300" />
+<img src="./screenshots/scroll.png" width="300" />
 
 ---
 
