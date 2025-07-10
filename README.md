@@ -37,19 +37,19 @@ Requires [Expo CLI](https://docs.expo.dev/get-started/installation/) installed.
 ## 📸 Screenshots
 
 <h3>Main Page</h3>
-<img src="./screenshots/main.png" width="300" />
+<img src="./jajan/screenshots/main.png" width="300" />
 
 <h3>Add Expense Modal</h3>
-<img src="./screenshots/add-modal.png" width="300" />
+<img src="./jajan/screenshots/add-modal.png" width="300" />
 
 <h3>Add Category Modal</h3>
-<img src="./screenshots/add-category.png" width="300" />
+<img src="./jajan/screenshots/add-category.png" width="300" />
 
 <h3>Edit Expense Modal</h3>
-<img src="./screenshots/edit-modal.png" width="300" />
+<img src="./jajan/screenshots/edit-modal.png" width="300" />
 
 <h3>Example of long, scrollable expense list</h3>
-<img src="./screenshots/scroll.png" width="300" />
+<img src="./jajan/screenshots/scroll.png" width="300" />
 
 ---
 
