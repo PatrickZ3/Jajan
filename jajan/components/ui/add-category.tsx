@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     },
 
     name: {
-        fontSize: 14,
+        fontSize: 12,
         marginTop: 4,
         fontFamily: "TTNorms-Medium",
         textAlign: "center",
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontFamily: "TTNorms-Bold",
     },
-    emojiContainer: {       // light gray background
+    emojiContainer: {       
         alignItems: "center",
         justifyContent: "center",
     },
