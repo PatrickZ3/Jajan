@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import CategoryModal from "./add-category";
 import { MaterialIcons } from "@expo/vector-icons";
+import { TouchableWithoutFeedback } from "react-native";
+
 
 type Category = {
     emoji: string;
@@ -83,6 +85,7 @@ export default function EditModal({ visible, expense, onClose, onSave, onDelete,
                     animationType="fade"
                     onRequestClose={onClose}
                 >
+                    <TouchableWithoutFeedback onPress={onClose}>
                     <View style={styles.overlay}>
                         <View style={styles.modalContent}>
                             <View style={styles.inputRow}>
@@ -120,7 +123,7 @@ export default function EditModal({ visible, expense, onClose, onSave, onDelete,
                                         style={[styles.iconButton]}
                                         onPress={onDelete}
                                     >
-                                        <MaterialIcons name="delete" size={24} color="#EF4444" />
+                                        <MaterialIcons name="delete" size={24} color="#808080" />
                                     </TouchableOpacity>
                                 )}
 
@@ -137,6 +140,7 @@ export default function EditModal({ visible, expense, onClose, onSave, onDelete,
                             </View>
                         </View>
                     </View>
+                    </TouchableWithoutFeedback>
                 </Modal>
             )}
         </>
@@ -205,7 +209,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     iconButton: {
-        padding: 10,
         justifyContent: "center",
         alignItems: "center",
         marginHorizontal: 6

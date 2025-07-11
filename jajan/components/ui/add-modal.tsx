@@ -8,6 +8,8 @@ import {
     TextInput,
 } from "react-native";
 import CategoryModal from "./add-category";
+import { TouchableWithoutFeedback } from "react-native";
+
 
 type Category = {
     emoji: string;
@@ -77,50 +79,52 @@ export default function AddModal({ visible, onClose, onSave, categories, selecte
                     animationType="fade"
                     onRequestClose={onClose}
                 >
-                    <View style={styles.overlay}>
-                        <View style={styles.modalContent}>
-                            <View style={styles.inputRow}>
-                                <TouchableOpacity onPress={() => setIsCategoryModalVisible(true)}>
-                                    <Text style={styles.emoji}>
-                                        {categories.find(c => c.name === selectedCategory)?.emoji ?? "❓"}
-                                    </Text>
-                                </TouchableOpacity>
-                                <View style={styles.inputColumn}>
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder="Expense Name"
-                                        placeholderTextColor="#6B7280"
-                                        value={expenseName}
-                                        onChangeText={setExpenseName}
-                                    />
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder="Amount"
-                                        placeholderTextColor="#6B7280"
-                                        value={amount}
-                                        onChangeText={setAmount}
-                                        keyboardType="numeric"
-                                    />
+                    <TouchableWithoutFeedback onPress={onClose}>
+                        <View style={styles.overlay}>
+                            <View style={styles.modalContent}>
+                                <View style={styles.inputRow}>
+                                    <TouchableOpacity onPress={() => setIsCategoryModalVisible(true)}>
+                                        <Text style={styles.emoji}>
+                                            {categories.find(c => c.name === selectedCategory)?.emoji ?? "❓"}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <View style={styles.inputColumn}>
+                                        <TextInput
+                                            style={styles.input}
+                                            placeholder="Expense Name"
+                                            placeholderTextColor="#6B7280"
+                                            value={expenseName}
+                                            onChangeText={setExpenseName}
+                                        />
+                                        <TextInput
+                                            style={styles.input}
+                                            placeholder="Amount"
+                                            placeholderTextColor="#6B7280"
+                                            value={amount}
+                                            onChangeText={setAmount}
+                                            keyboardType="numeric"
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={styles.buttonRow}>
+                                    <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+                                        <Text style={{ color: "#fff", textAlign: "center", fontFamily: "TTNorms-Bold", }}>Cancel</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.saveButton,
+                                            (!expenseName || !amount) && { opacity: 0.5 }
+                                        ]}
+                                        onPress={handleSave}
+                                        disabled={!expenseName || !amount}
+                                    >
+                                        <Text style={{ color: "#fff", textAlign: "center", fontFamily: "TTNorms-Bold", }}>＋ Add</Text>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
-
-                            <View style={styles.buttonRow}>
-                                <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-                                    <Text style={{ color: "#fff", textAlign: "center", fontFamily: "TTNorms-Bold", }}>Cancel</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={[
-                                        styles.saveButton,
-                                        (!expenseName || !amount) && { opacity: 0.5 }
-                                    ]}
-                                    onPress={handleSave}
-                                    disabled={!expenseName || !amount}
-                                >
-                                    <Text style={{ color: "#fff", textAlign: "center", fontFamily: "TTNorms-Bold", }}>＋ Add</Text>
-                                </TouchableOpacity>
-                            </View>
                         </View>
-                    </View>
+                    </TouchableWithoutFeedback>
                 </Modal>
             )}
         </>
