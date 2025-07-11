@@ -51,8 +51,4 @@ Requires [Expo CLI](https://docs.expo.dev/get-started/installation/) installed.
 <h3>Example of long, scrollable expense list</h3>
 <img src="./jajan/screenshots/scroll.png" width="300" />
 
----
 
-## 📝 License
-
-No license.
