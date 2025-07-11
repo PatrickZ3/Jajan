@@ -8,6 +8,7 @@ import {
     TextInput,
 } from "react-native";
 import CategoryModal from "./add-category";
+import { MaterialIcons } from "@expo/vector-icons";
 
 type Category = {
     emoji: string;
@@ -26,12 +27,13 @@ type Props = {
     expense: Expense | null;
     onClose: () => void;
     onSave: (expense: Expense) => void;
+    onDelete?: () => void;
     categories: Category[];
     selectedDate: Date;
 };
 
 
-export default function EditModal({ visible, expense, onClose, onSave, categories, selectedDate: selectedDateProp }: Props) {
+export default function EditModal({ visible, expense, onClose, onSave, onDelete, categories, selectedDate: selectedDateProp }: Props) {
     const [selectedDate, setSelectedDate] = useState<Date>(selectedDateProp);
     const [selectedCategory, setSelectedCategory] = useState(categories[0]?.name ?? "")
     const [expenseName, setExpenseName] = useState("");
@@ -108,10 +110,20 @@ export default function EditModal({ visible, expense, onClose, onSave, categorie
                                 </View>
                             </View>
 
+
                             <View style={styles.buttonRow}>
                                 <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
                                     <Text style={{ color: "#fff", textAlign: "center", fontFamily: "TTNorms-Bold", }}>Cancel</Text>
                                 </TouchableOpacity>
+                                {onDelete && (
+                                    <TouchableOpacity
+                                        style={[styles.iconButton]}
+                                        onPress={onDelete}
+                                    >
+                                        <MaterialIcons name="delete" size={24} color="#EF4444" />
+                                    </TouchableOpacity>
+                                )}
+
                                 <TouchableOpacity
                                     style={[
                                         styles.saveButton,
@@ -192,4 +204,11 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 8,
     },
+    iconButton: {
+        padding: 10,
+        justifyContent: "center",
+        alignItems: "center",
+        marginHorizontal: 6
+    },
+
 });

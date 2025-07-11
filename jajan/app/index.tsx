@@ -126,6 +126,33 @@ export default function HomeScreen() {
     }
   };
 
+  const handleDeleteExpense = async (expense: {
+    name: string;
+    amount: number;
+    date: string;
+    category: string;
+  }) => {
+    try {
+      await db
+        .delete(expenseTable)
+        .where(
+          sql`date = ${expense.date} AND name = ${expense.name}`
+        );
+
+      console.log("✅ Expense deleted from DB");
+
+      setExpenses((prev) =>
+        prev.filter(
+          (e) =>
+            !(e.date === expense.date && e.name === expense.name)
+        )
+      );
+    } catch (error) {
+      console.error("❌ Error deleting expense:", error);
+    }
+  };
+
+
 
   useEffect(() => {
     const reset = async () => {
@@ -204,6 +231,7 @@ export default function HomeScreen() {
           expenses={expenses}
           categories={dbCategories}
           onAddExpense={handleAddExpense}
+          onDeleteExpense={handleDeleteExpense}
           onEditExpense={handleEditExpense}
         />
       </Animated.ScrollView>

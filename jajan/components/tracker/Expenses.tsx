@@ -20,10 +20,12 @@ type Props = {
   categories: Category[]
   onAddExpense: (expense: { name: string; amount: number; date: Date; category: string }) => void
   onEditExpense: (expense: Expense) => void;
+  onDeleteExpense: (expense: Expense) => void;
+
 }
 
 
-export default function Expenses({ selectedDate, expenses, categories, onAddExpense, onEditExpense }: Props) {
+export default function Expenses({ selectedDate, expenses, categories, onAddExpense, onDeleteExpense,onEditExpense }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -43,6 +45,16 @@ export default function Expenses({ selectedDate, expenses, categories, onAddExpe
       month: "long",
       day: "numeric",
     })}`
+
+  const handleDeleteExpense = () => {
+    if (!selectedExpense) return;
+
+    // Call a delete function you write
+    onDeleteExpense(selectedExpense);
+
+    setIsEditModalVisible(false);
+  };
+
 
   return (
     <View style={styles.container}>
@@ -93,6 +105,7 @@ export default function Expenses({ selectedDate, expenses, categories, onAddExpe
           onEditExpense(updatedExpense);
           setIsEditModalVisible(false);
         }}
+        onDelete={handleDeleteExpense}
         categories={categories}
         selectedDate={selectedDate}
       />
